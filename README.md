@@ -4,7 +4,8 @@
 
 [![Open Fragments In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/industrial-ai-book/industrial-ai-agents-python/blob/main/Individual-Code-Fragments.ipynb)
 
-[![Live Demo on Hugging Face](https://shields.io)](https://huggingface.co/spaces/you-ry/bob-warehouse-ai)
+[![Live Demo on Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Live%20Demo-blue)](https://huggingface.co/spaces/you-ry/bob-warehouse-ai)
+
 
 Официальный репозиторий с исходным кодом, интерактивными блокнотами Google Colab и производственными конфигурациями к книге **«Проектирование промышленных ИИ-агентов на чистом Python: от контрактов данных до MCP-серверов, Docker и LLMOps»**.
 
