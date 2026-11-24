@@ -1,7 +1,9 @@
 # Проектирование промышленных ИИ-агентов на чистом Python
 
-[![Open Main Project In Colab](https://google.com)](https://google.com)
-[![Open Fragments In Colab](https://google.com)](https://google.com)
+[![Open Main Project In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/industrial-ai-book/industrial-ai-agents-python/blob/main/Industrial-AI-agent.ipynb)
+
+[![Open Fragments In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/industrial-ai-book/industrial-ai-agents-python/blob/main/Individual-Code-Fragments.ipynb)
+
 [![Live Demo on Hugging Face](https://shields.io)](https://huggingface.co/spaces/you-ry/bob-warehouse-ai)
 
 Официальный репозиторий с исходным кодом, интерактивными блокнотами Google Colab и производственными конфигурациями к книге **«Проектирование промышленных ИИ-агентов на чистом Python: от контрактов данных до MCP-серверов, Docker и LLMOps»**.
