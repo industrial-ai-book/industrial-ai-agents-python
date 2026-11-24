@@ -1,6 +1,6 @@
-# ==========================================
-# ЕДИНЫЙ ПРОИЗВОДСТВЕННЫЙ СЕРВЕР: server.py (Версия для Docker-деплоя)
-# ==========================================
+# =============================================================================
+# ЕДИНЫЙ ПРОИЗВОДСТВЕННЫЙ СЕРВЕР: server.py (версия для развертывания в Docker)
+# =============================================================================
 import sys
 import json
 import logging
@@ -8,7 +8,7 @@ import sqlite3
 from datetime import datetime, timezone
 from mcp.server.mcpserver import MCPServer
 
-# 1. НАСТРОЙКА ПРОМЫШЛЕННОГО JSON-АУДИТА (LLMOps, Глава 10)
+# 1. НАСТРОЙКА ПРОИЗВОДСТВЕННОГО JSON-АУДИТА (LLMOps, см. главу 10)
 class JsonAuditFormatter(logging.Formatter):
     """Форматирует системные события в строгий машиночитаемый JSON."""
     def format(self, record):
@@ -20,7 +20,7 @@ class JsonAuditFormatter(logging.Formatter):
         }
         return json.dumps(log_record, ensure_ascii=False)
 
-# Настраиваем двойной вывод: в поток stderr контейнера и в файл на примонтированном томе
+# Настраиваем двойной вывод: в поток stderr контейнера и в файл на смонтированном томе
 logger = logging.getLogger("bob-warehouse-audit")
 logger.setLevel(logging.INFO)
 
@@ -32,7 +32,7 @@ stderr_handler = logging.StreamHandler(sys.stderr)
 stderr_handler.setFormatter(JsonAuditFormatter())
 logger.addHandler(stderr_handler)
 
-# Подключаем запись в файл только если примонтирована папка /app/data
+# Подключаем запись в файл, только если смонтирована папка /app/data
 try:
     file_handler = logging.FileHandler("/app/data/audit.log", encoding="utf-8")
     file_handler.setFormatter(JsonAuditFormatter())
@@ -43,11 +43,11 @@ except Exception as e:
 # 2. ИНИЦИАЛИЗАЦИЯ ЯДРА MCP-СЕРВЕРА
 server = MCPServer("bob-warehouse-connector")
 
-# Пути к физическим данным внутри изолированной ФС контейнера
+# Пути к физическим данным внутри изолированной файловой системы контейнера
 DB_PATH = "/app/data/warehouse.db"
 DOCS_PATH = "/app/data/regulations.json"
 
-# 3. ПАССИВНЫЙ СЛОЙ РЕСУРСОВ (Перенесено из Главы 7)
+# 3. ПАССИВНЫЙ СЛОЙ РЕСУРСОВ (перенесено из главы 7)
 @server.resource("warehouse://schema")
 async def get_warehouse_schema() -> str:
     """Пассивный DDL-код структуры таблиц продуктов и остатков склада."""
@@ -55,7 +55,7 @@ async def get_warehouse_schema() -> str:
         with sqlite3.connect(DB_PATH) as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT sql FROM sqlite_master WHERE type='table';")
-            # ИСПРАВЛЕНИЕ БАГА: извлекаем строковый элемент row[0] из кортежа
+            # Извлекаем строковый элемент row[0] из кортежа
             schemas = [row[0] for row in cursor.fetchall() if row and row[0]]
             logger.info("Resource 'warehouse://schema' successfully read.")
             return "=== ЖИВАЯ СТРУКТУРА БАЗЫ ДАННЫХ СКЛАДА БОБА ===\n" + "\n".join(schemas)
@@ -63,15 +63,15 @@ async def get_warehouse_schema() -> str:
         logger.error(f"Database schema read error: {e}")
         return f"[ОШИБКА КОНТЕЙНЕРА] Не удалось прочитать схему: {e}"
 
-# 4. ИНСТРУМЕНТ №1: Защищенный поиск остатков в СУБД (Адаптировано из Главы 6)
+# 4. ИНСТРУМЕНТ №1: защищенный поиск остатков в СУБД (адаптировано из главы 6)
 @server.tool()
 async def query_warehouse_production(product_name: str) -> str:
     """Поиск актуальных остатков и цен товаров в физической базе данных склада Боба."""
-    # Упреждающий DevSecOps-фильтр против SQL-инъекций
+    # Упреждающий DevSecOps-фильтр против SQL-внедрений
     forbidden_tokens = ["DROP", "DELETE", "UPDATE", "INSERT", "ALTER", "--", ";"]
     if any(token in product_name.upper() for token in forbidden_tokens):
         logger.warning(f"SECURITY ALERT: SQL injection blocked -> '{product_name}'")
-        return "[БЛОКИРОВКА ПЕРИМЕТРА] Обнаружена деструктивная ИИ-инъекция! Запрос отклонён."
+        return "[БЛОКИРОВКА ПЕРИМЕТРА] Обнаружено деструктивное ИИ-внедрение! Запрос отклонен."
 
     try:
         with sqlite3.connect(DB_PATH) as conn:
@@ -87,15 +87,15 @@ async def query_warehouse_production(product_name: str) -> str:
                 name, cat, price, qty = result
                 return (
                     f"[Связь с базой данных установлена]\n"
-                    f"Товар '{name}' (категория: {cat}) найден в физической СУБД склада Бобы.\n"
+                    f"Товар '{name}' (категория: {cat}) найден в базе данных Боба.\n"
                     f"Розничная цена: ${price}. Текущий остаток на стеллаже: {qty} шт."
                 )
-            return f"Товар по запросу '{product_name}' не найден в физической базе данных Бобы."
+            return f"Товар по запросу '{product_name}' не найден в базе данных Боба."
     except Exception as e:
         logger.error(f"SQLite query execution error: {e}")
         return f"[ОШИБКА СУБД] Сбой выполнения транзакции: {e}"
 
-# 5. ИНСТРУМЕНТ №2: Поиск по корпоративным регламентам RAG (Адаптировано из Главы 4)
+# 5. ИНСТРУМЕНТ №2: поиск по корпоративным регламентам RAG (Адаптировано из Главы 4)
 @server.tool()
 async def search_regulations(query: str) -> str:
     """Поиск правил возврата, условий хранения и регламентов в базе знаний предприятия."""
@@ -121,7 +121,7 @@ async def search_regulations(query: str) -> str:
         logger.error(f"RAG regulations read error: {e}")
         return f"[ОШИБКА RAG-МОДУЛЯ] Не удалось прочитать файл регламентов: {e}"
 
-# 6. ИНСТРУМЕНТ №3: Логистический калькулятор (Перенесено из Главы 7)
+# 6. ИНСТРУМЕНТ №3: логистический калькулятор (перенесено из главы 7)
 @server.tool()
 async def calculate_delivery(weight_kg: float, distance_km: int) -> str:
     """Расчет стоимости доставки груза со склада на основе веса и расстояния."""

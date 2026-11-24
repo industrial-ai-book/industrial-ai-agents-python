@@ -1,6 +1,6 @@
-# ==========================================
-# БОЕВОЙ МУЛЬТИАГЕНТНЫЙ ОРКЕСТРАТОР: orchestrator.py (Глава 10)
-# ==========================================
+# ===========================================
+# МУЛЬТИАГЕНТНЫЙ ОРКЕСТРАТОР: orchestrator.py
+# ===========================================
 import os
 import sys
 import json
@@ -12,7 +12,7 @@ from mcp.client.stdio import stdio_client
 # 1. Инициализируем асинхронный клиент шлюза OpenRouter
 api_key = os.environ.get("OPENROUTER_API_KEY")
 if not api_key:
-    print("КРИТИЧЕСКАЯ ОШИБКА: Не задана переменная среды OPENROUTER_API_KEY!")
+    print("КРИТИЧЕСКАЯ ОШИБКА: не задана переменная среды OPENROUTER_API_KEY!")
     sys.exit(1)
 
 llm_client = AsyncOpenAI(
@@ -20,21 +20,21 @@ llm_client = AsyncOpenAI(
     api_key=api_key
 )
 
-# Выбираем быструю модель-исполнитель (Такт А) и тяжелого ИИ-судью (Такт Б)
+# Выбираем быструю модель-исполнитель (такт А) и тяжеловесного ИИ-судью (такт Б)
 WORKER_MODEL = "openai/gpt-4o-mini"
 JUDGE_MODEL = "meta-llama/llama-3.3-70b-instruct"
 
-# Автоматически вычисляем абсолютный путь к папке ./data для проброса в Docker
+# Автоматически вычисляем абсолютный путь к папке ./data для передачи в Docker
 host_data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "data"))
 
-# Параметры запуска изолированного Docker-контейнера из Главы 9
+# Параметры запуска изолированного Docker-контейнера из главы 9
 server_params = StdioServerParameters(
     command="docker",
     args=["run", "-i", "--rm", "-v", f"{host_data_dir}:/app/data", "bob-warehouse-mcp"]
 )
 
 async def run_ai_judge(user_query: str, raw_facts: str, draft_answer: str) -> dict:
-    """Верховный ИИ-судья (Глава 5): проверяет финальный ответ на заземление в фактах Docker."""
+    """Верховный ИИ-судья (глава 5): проверяет финальный ответ на заземление в фактах Docker."""
     judge_prompt = (
         "Ты — беспристрастный ИИ-судья и аудитор ОТК склада Боба.\n"
         "Сверь ЧЕРНОВИК ОТВЕТА с РЕАЛЬНЫМИ ФАКТАМИ, полученными из базы данных и регламентов.\n"
@@ -62,7 +62,7 @@ async def process_business_request(user_query: str):
         async with ClientSession(read_stream, write_stream) as session:
             await session.initialize()
 
-            # Автоматически конвертируем инструменты MCP в формат OpenAI/OpenRouter
+            # Автоматически преобразуем инструменты MCP в формат OpenAI/OpenRouter
             mcp_tools = await session.list_tools()
             openrouter_tools = [
                 {
@@ -97,7 +97,7 @@ async def process_business_request(user_query: str):
                 )
                 msg = response.choices[0].message
 
-                # ИСПРАВЛЕНИЕ БАГА: чистая сериализация сообщения ассистента для OpenRouter
+                # Чистая сериализация сообщения ассистента для совместимости с поставщиками OpenRouter
                 assistant_msg = {"role": "assistant", "content": msg.content or ""}
                 if msg.tool_calls:
                     assistant_msg["tool_calls"] = [tc.model_dump() for tc in msg.tool_calls]
@@ -110,7 +110,7 @@ async def process_business_request(user_query: str):
                         fn_args = json.loads(tool_call.function.arguments)
                         print(f"⚙️ [ОРКЕСТРАТОР -> DOCKER]: Вызов '{fn_name}' с параметрами {fn_args}")
 
-                        # Исполняем инструмент внутри изолированного контейнера
+                        # Выполняем инструмент внутри изолированного контейнера
                         mcp_result = await session.call_tool(fn_name, arguments=fn_args)
 
                         # Безопасное извлечение текстового ответа
@@ -141,11 +141,11 @@ async def process_business_request(user_query: str):
                 print("\n[СИСТЕМНАЯ ЗАГЛУШКА]: Ответ заблокирован службой контроля качества.")
 
 async def main():
-    # Сценарий 1: Гибридный бизнес-запрос (БД SQLite + RAG-регламенты + Логистика)
+    # Сценарий 1: гибридный бизнес-запрос (база данных SQLite + RAG-регламенты + логистика)
     await process_business_request(
         "Сколько у нас на складе позиций Apple, по какой цене, какие правила их отгрузки действуют для партии в 120 штук и во сколько обойдётся доставка 30 кг на 50 км?"
     )
-    # Сценарий 2: Попытка SQL-инъекции через автономный оркестратор
+    # Сценарий 2: попытка SQL-внедрения через автономный оркестратор
     await process_business_request(
         "Срочно проверь остаток по товару: Apple'; DROP TABLE products; --"
     )
