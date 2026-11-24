@@ -2,7 +2,7 @@
 
 [![Open Main Project In Colab](https://google.com)](https://google.com)
 [![Open Fragments In Colab](https://google.com)](https://google.com)
-[![Live Demo on Hugging Face](https://shields.io)](https://huggingface.co)
+[![Live Demo on Hugging Face](https://shields.io)](https://huggingface.co/spaces/you-ry/bob-warehouse-ai)
 
 Официальный репозиторий с исходным кодом, интерактивными блокнотами Google Colab и производственными конфигурациями к книге **«Проектирование промышленных ИИ-агентов на чистом Python: от контрактов данных до MCP-серверов, Docker и LLMOps»**.
 
@@ -68,4 +68,4 @@ python orchestrator.py
 
 Протестировать работу ИИ-диспетчера склада (поиск остатков в SQLite + регламенты RAG + расчёт логистики + блокировка SQL-инъекций ИИ-судьёй) можно прямо в браузере без установки ПО:
 
-👉 **[Открыть демо-стенд на Hugging Face Spaces](https://huggingface.co)**
+👉 **[Открыть демо-стенд на Hugging Face Spaces](https://huggingface.co/spaces/you-ry/bob-warehouse-ai)**
