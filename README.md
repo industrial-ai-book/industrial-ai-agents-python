@@ -1,9 +1,9 @@
 # ИИ-агенты на Python: от прототипа до автономных систем
 ### Практическое руководство по RAG, MCP и мультиагентным архитектурам
 
-[![Open Main Project In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/industrial-ai-book/industrial-ai-agents-python/blob/main/Industrial-AI-agent.ipynb)
+[![Open Industrial-AI-agent.ipynb in Colab](https://img.shields.io/badge/Colab-Industrial--AI--agent.ipynb-F9AB00?logo=googlecolab&logoColor=white)](https://colab.research.google.com/github/industrial-ai-book/industrial-ai-agents-python/blob/main/Industrial-AI-agent.ipynb)
 
-[![Open Fragments In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/industrial-ai-book/industrial-ai-agents-python/blob/main/Individual-Code-Fragments.ipynb)
+[![Open Individual-Code-Fragments.ipynb in Colab](https://img.shields.io/badge/Colab-Individual--Code--Fragments.ipynb-F9AB00?logo=googlecolab&logoColor=white)](https://colab.research.google.com/github/industrial-ai-book/industrial-ai-agents-python/blob/main/Individual-Code-Fragments.ipynb)
 
 [![Live Demo on Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Live%20Demo-blue)](https://huggingface.co/spaces/you-ry/bob-warehouse-ai)
 
